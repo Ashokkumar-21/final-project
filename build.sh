@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -e
 
 DOCKERHUB_USER="ashok2102"
 DEV_REPO="dev"

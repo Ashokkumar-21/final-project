@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKERHUB_USER = 'ashok2102'
-        BRANCH = '${env.BRANCH_NAME}'
         DEV_REPO = 'dev'
         PROD_REPO = 'prod'
         TAG = 'v1'
@@ -14,7 +13,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking SCM'
+                echo "Checking out branch: ${env.BRANCH_NAME}"
                 checkout scm
             }
         }
@@ -22,10 +21,13 @@ pipeline {
         stage('Build & Push Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]){
-                echo 'Building Docker Image'
-                sh 'chmod +x build.sh'
-                sh './build.sh'
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        echo "Logging in to DockerHub..."
+                        sh 'echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin'
+
+                        echo "Building Docker Image for branch: ${env.BRANCH_NAME}"
+                        sh 'chmod +x build.sh'
+                        sh './build.sh "${env.BRANCH_NAME}" "${TAG}"'
                     }
                 }
             }
@@ -33,23 +35,21 @@ pipeline {
 
         stage('Deploy to Server') {
             steps {
-                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]){
-                echo 'Deploying Final Project Application'
-                sh 'chmod +x deploy.sh'
-                sh './deploy.sh'
-                    }
-                 }
+                script {
+                    echo "Deploying Final Project Application..."
+                    sh 'chmod +x deploy.sh'
+                    sh './deploy.sh "${env.BRANCH_NAME}" "${TAG}"'
+                }
+            }
         }
     }
 
     post {
         success {
-            echo 'Pipeline Completed, Final Project Application Successfully Deployed!'
+            echo '✅ Pipeline Completed — Application Successfully Deployed!'
         }
         failure {
-            echo 'Pipeline Endup with Error!'
+            echo '❌ Pipeline Ended with Error!'
         }
     }
-}
 }

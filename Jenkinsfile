@@ -8,7 +8,7 @@ pipeline {
         PROD_REPO = 'prod'
         TAG = 'v1'
         APP_SERVER_USER = 'ubuntu'
-        APP_SERVER_IP = '13.233.254.167'
+        APP_SERVER_IP = '65.0.72.157'
     }
 
     stages {
@@ -21,18 +21,25 @@ pipeline {
 
         stage('Build & Push Docker Image') {
             steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]){
                 echo 'Building Docker Image'
                 sh 'chmod +x build.sh'
                 sh './build.sh'
+                    }
+                }
             }
         }
 
         stage('Deploy to Server') {
             steps {
+                 script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]){
                 echo 'Deploying Final Project Application'
                 sh 'chmod +x deploy.sh'
                 sh './deploy.sh'
-            }
+                    }
+                 }
         }
     }
 

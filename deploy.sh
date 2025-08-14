@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOCKERHUB_USER:"ashok2102"
+DOCKERHUB_USER="ashok2102"
 DEV_REPO="dev"
 PROD_REPO="prod"
 BRANCH="${BRANCH}"

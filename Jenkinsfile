@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_USER = 'ashok2102'
+        BRANCH = '${env.BRANCH_NAME}'
         DEV_REPO = 'dev'
         PROD_REPO = 'prod'
         TAG = 'v1'
@@ -27,7 +28,7 @@ pipeline {
 
                         echo "Building Docker Image for branch: ${env.BRANCH_NAME}"
                         sh 'chmod +x build.sh'
-                        sh './build.sh "${env.BRANCH_NAME}" "${TAG}"'
+                        sh './build.sh'
                     }
                 }
             }
@@ -38,7 +39,7 @@ pipeline {
                 script {
                     echo "Deploying Final Project Application..."
                     sh 'chmod +x deploy.sh'
-                    sh './deploy.sh "${env.BRANCH_NAME}" "${TAG}"'
+                    sh './deploy.sh'
                 }
             }
         }

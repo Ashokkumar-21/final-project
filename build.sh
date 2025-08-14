@@ -14,7 +14,7 @@ else
   REPO="$DEV_REPO"
 fi
 
-IMAGE="$DOCKERHUB_UP/$REPO:$TAG"
+IMAGE="$DOCKERHUB_USER/$REPO:$TAG"
 
 echo "Building Image $IMAGE"
 docker bild -t "$IMAGE" .

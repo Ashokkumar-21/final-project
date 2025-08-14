@@ -8,7 +8,7 @@ BRANCH="${BRANCH}"
 TAG="${VERSION:-V1}"
 
 APP_SERVER_USER="ubuntu"
-APP_SERVER_IP="13.233.254.167"
+APP_SERVER_IP="65.0.72.157"
 
 echo "Chose Repo Based Commit"
 if [[ "$BRANCH" == "main" ]]; then

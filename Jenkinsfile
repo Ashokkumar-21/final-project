@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKERHUB_USER = 'ashok2102'
+        BRANCH = '${env.BRANCH_NAME}'
         DEV_REPO = 'dev'
         PROD_REPO = 'prod'
         TAG = 'v1'

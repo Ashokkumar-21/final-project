@@ -36,12 +36,15 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
+                    def repoName = (env.BRANCH_NAME == 'main') ? PROD_REPO : DEV_REPO
+                    def imageName = "${DOCKERHUB_USER}/${repoName}:${TAG}"
+                    echo "Sending image $imageName to server..."
                     sshagent(credentials: ['ssh-key']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} << 'EOF'
-                            chmod +x /home/ubuntu/deploy.sh || true
-                            /home/ubuntu/deploy.sh
-                            EOF
+                        ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} << 'EOF'
+                        chmod +x /home/ubuntu/deploy.sh
+                        /home/ubuntu/deploy.sh ${imageName}
+                        EOF
                         """
                     }
                 }

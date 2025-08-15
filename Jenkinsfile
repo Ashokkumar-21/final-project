@@ -39,7 +39,7 @@ pipeline {
                             sh """
                                 ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} '
                                 chmod +x /home/ubuntu/deploy.sh || true
-                                /home/ubuntu/deploy.sh ${env.BRANCH_NAME} ${TAG}
+                                /home/ubuntu/deploy.sh ${imageName}
                                 '
                             """
                         }

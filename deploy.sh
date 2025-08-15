@@ -20,7 +20,6 @@ fi
 IMAGE="$DOCKERHUB_USER/$REPO:$TAG"
 
 echo "Deploy $IMAGE to $APP_SERVER_IP"
-ssh -o StrictHostKeyChecking=no "$APP_SERVER_USER@$APP_SERVER_IP" "
     docker pull '$IMAGE' &&
     docker rm -f finalapp || true &&
     docker run -itd --name finalapp -p 80:80 --restart unless-stopped '$IMAGE'

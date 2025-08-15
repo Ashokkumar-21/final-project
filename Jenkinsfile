@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKERHUB_USER = 'ashok2102'
-        BRANCH = '${env.BRANCH_NAME}'
         DEV_REPO = 'dev'
         PROD_REPO = 'prod'
         TAG = 'v1'
@@ -19,45 +18,39 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image') {
+        stage('Build, Tag & Push Docker Image') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', 
+                                                     usernameVariable: 'DOCKER_USER', 
+                                                     passwordVariable: 'DOCKER_PASS')]) {
                         echo "Logging in to DockerHub..."
                         sh 'echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin'
-                        echo "Building Docker Image for branch: ${env.BRANCH_NAME}"
-                        sh 'chmod +x build.sh'
-                        sh './build.sh'
+
+                        def repoName = (env.BRANCH_NAME == 'main') ? PROD_REPO : DEV_REPO
+                        def imageName = "${DOCKERHUB_USER}/${repoName}:${TAG}"
+
+                        echo "Building Docker Image: ${imageName}"
+                        sh "chmod +x build.sh"
+                        sh "./build.sh"
+
+                        echo "Tagging and Pushing image to private repo..."
+                        sh "docker tag ${repoName}:latest ${imageName}"
+                        sh "docker push ${imageName}"
+
+                        // Deploy on EC2
+                        echo "Deploying image on EC2..."
+                        sshagent(credentials: ['ssh-key']) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} '
+                                chmod +x /home/ubuntu/deploy.sh || true
+                                /home/ubuntu/deploy.sh ${imageName}
+                                '
+                            """
+                        }
                     }
                 }
             }
-        }
-
-        stage('Deploy to Server') {
-            steps {
-                script {
-                    def repoName = (env.BRANCH_NAME == 'main') ? PROD_REPO : DEV_REPO
-                    def imageName = "${DOCKERHUB_USER}/${repoName}:${TAG}"
-                    echo "Sending image $imageName to server..."
-                    sshagent(credentials: ['ssh-key']) {
-                        sh """
-                        ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} <<EOF
-                        chmod +x /home/ubuntu/deploy.sh || true
-/home/ubuntu/deploy.sh ${imageName}
-EOF
-                        """
-                    }
-                }
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline Completed — Final Project  Application Successfully Deployed!'
-        }
-        failure {
-            echo ' Pipeline Ended with Error!'
         }
     }
 }

@@ -36,7 +36,7 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
-                    sshagent(credentials: ['ssh-credentials']) {
+                    sshagent(credentials: ['ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP}
                             chmod +x ~/deploy.sh || true

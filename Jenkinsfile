@@ -38,9 +38,10 @@ pipeline {
                 script {
                     sshagent(credentials: ['ssh-key']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP}
+                            ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} << 'EOF'
                             chmod +x /home/ubuntu/deploy.sh || true
                             /home/ubuntu/deploy.sh
+                            EOF
                         """
                     }
                 }

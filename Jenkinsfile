@@ -25,7 +25,6 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                         echo "Logging in to DockerHub..."
                         sh 'echo "${DOCKER_PASS}" | docker login -u "${DOCKER_USER}" --password-stdin'
-
                         echo "Building Docker Image for branch: ${env.BRANCH_NAME}"
                         sh 'chmod +x build.sh'
                         sh './build.sh'
@@ -47,6 +46,7 @@ pipeline {
                 }
             }
         }
+    }
 
     post {
         success {
@@ -56,5 +56,4 @@ pipeline {
             echo '❌ Pipeline Ended with Error!'
         }
     }
-}
 }

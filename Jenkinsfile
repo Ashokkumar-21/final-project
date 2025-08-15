@@ -8,7 +8,7 @@ pipeline {
         PROD_REPO = 'prod'
         TAG = 'v1'
         APP_SERVER_USER = 'ubuntu'
-        APP_SERVER_IP = '65.2.177.203'
+        APP_SERVER_IP = '13.233.114.212'
     }
 
     stages {
@@ -54,10 +54,10 @@ EOF
 
     post {
         success {
-            echo '✅ Pipeline Completed — Application Successfully Deployed!'
+            echo 'Pipeline Completed — Final Project  Application Successfully Deployed!'
         }
         failure {
-            echo '❌ Pipeline Ended with Error!'
+            echo ' Pipeline Ended with Error!'
         }
     }
 }

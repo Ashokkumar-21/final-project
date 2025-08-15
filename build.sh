@@ -17,9 +17,9 @@ fi
 IMAGE="$DOCKERHUB_USER/$REPO:$TAG"
 
 echo "Building Image $IMAGE"
-docker build -t "$IMAGE" .
+sudo docker build -t "$IMAGE" .
 
 echo "Pushing Image to DockerHub $REPO"
-docker push "$IMAGE"
+sudo docker push "$IMAGE"
 
 echo "Image Build & Push to DockerHub Done!"

@@ -1,12 +1,12 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-set -euo pipefail
+set -e
 
 DOCKERHUB_USER="ashok2102"
 DEV_REPO="dev"
 PROD_REPO="prod"
 BRANCH="${BRANCH}"
-TAG="${VERSION:-V1}"
+TAG="${VERSION:-v1}"
 
 if [[ "$BRANCH" == "main" ]]; then
   REPO="$PROD_REPO"
@@ -14,10 +14,10 @@ else
   REPO="$DEV_REPO"
 fi
 
-IMAGE="$DOCKERHUB_UP/$REPO:$TAG"
+IMAGE="$DOCKERHUB_USER/$REPO:$TAG"
 
 echo "Building Image $IMAGE"
-docker bild -t "$IMAGE" .
+docker build -t "$IMAGE" .
 
 echo "Pushing Image to DockerHub $REPO"
 docker push "$IMAGE"

@@ -32,14 +32,9 @@ pipeline {
 
                         echo "Building Docker Image: ${imageName}"
                         sh "chmod +x build.sh"
-                        sh "./build.sh"
+                        sh "./build.sh ${imageName}"
 
-                        echo "Tagging and Pushing image to private repo..."
-                        sh "docker tag ${repoName}:latest ${imageName}"
-                        sh "docker push ${imageName}"
-
-                        // Deploy on EC2
-                        echo "Deploying image on EC2..."
+                        echo "Deploying image on ${APP_SERVER_USER}"
                         sshagent(credentials: ['ssh-key']) {
                             sh """
                                 ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} '

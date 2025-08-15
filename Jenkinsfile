@@ -8,7 +8,7 @@ pipeline {
         PROD_REPO = 'prod'
         TAG = 'v1'
         APP_SERVER_USER = 'ubuntu'
-        APP_SERVER_IP = '65.0.72.157'
+        APP_SERVER_IP = '65.2.177.203'
     }
 
     stages {

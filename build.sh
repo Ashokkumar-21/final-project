@@ -6,7 +6,7 @@ DOCKERHUB_USER="ashok2102"
 DEV_REPO="dev"
 PROD_REPO="prod"
 BRANCH="${BRANCH}"
-TAG="${VERSION:-V1}"
+TAG="${VERSION:-v1}"
 
 if [[ "$BRANCH" == "main" ]]; then
   REPO="$PROD_REPO"

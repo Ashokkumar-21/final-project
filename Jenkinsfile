@@ -42,7 +42,7 @@ pipeline {
                     sshagent(credentials: ['ssh-key']) {
                         sh """
                         ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP}
-                        chmod +x /home/ubuntu/deploy.sh
+                        sudo chmod +x /home/ubuntu/deploy.sh
                         /home/ubuntu/deploy.sh ${imageName}
                         """
                     }

@@ -32,14 +32,14 @@ pipeline {
 
                         echo "Building Docker Image: ${imageName}"
                         sh "chmod +x build.sh"
-                        sh "./build.sh ${imageName}"
+                        sh "./build.sh ${env.BRANCH_NAME} ${TAG}"
 
                         echo "Deploying image on ${APP_SERVER_USER}"
                         sshagent(credentials: ['ssh-key']) {
                             sh """
                                 ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} '
                                 chmod +x /home/ubuntu/deploy.sh || true
-                                /home/ubuntu/deploy.sh ${imageName}
+                                /home/ubuntu/deploy.sh ${env.BRANCH_NAME} ${TAG}
                                 '
                             """
                         }

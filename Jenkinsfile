@@ -37,13 +37,16 @@ pipeline {
         stage('Deploy to Server') {
             steps {
                 script {
-                    echo "Deploying Final Project Application..."
-                    sh 'chmod +x deploy.sh'
-                    sh './deploy.sh'
+                    sshagent(credentials: ['ssh-credentials']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP}
+                            chmod +x ~/deploy.sh || true
+                            ~/deploy.sh
+                        """
+                    }
                 }
             }
         }
-    }
 
     post {
         success {

@@ -41,10 +41,9 @@ pipeline {
                     echo "Sending image $imageName to server..."
                     sshagent(credentials: ['ssh-key']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP} << EOF
+                        ssh -o StrictHostKeyChecking=no ${APP_SERVER_USER}@${APP_SERVER_IP}
                         chmod +x /home/ubuntu/deploy.sh
                         /home/ubuntu/deploy.sh ${imageName}
-                        EOF
                         """
                     }
                 }
